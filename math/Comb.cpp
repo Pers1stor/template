@@ -1,11 +1,12 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-using ll = long long;
 
-const int mod = 1e9 + 7;
+
 struct Comb {
+    using ll = long long;
     const int N;
+    const int mod = 1e9 + 7;
     vector<ll> fac, invfac;
     // n为组合数的最大值
     Comb(int n) : N(n), fac(n + 2), invfac(n + 2) { init(); };
@@ -33,6 +34,6 @@ struct Comb {
 };
 
 int main() {
-    Comb comb(1e6);
+    Comb comb(1000);
     cout << comb.C(4, 2);
 }
