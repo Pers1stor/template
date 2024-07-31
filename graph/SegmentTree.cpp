@@ -94,43 +94,42 @@ class SegmentTree2 {
         node->add = 0;
     }
 };
-
 //区间覆盖
 class SegmentTree3 {
 
     struct Node {
-        Node* left;
-        Node* right;
+       
         // 表示当前区间是否被覆盖
         bool cover;
         int add;
+        Node* left, * right;
     };
 
     const int N = 1e9;
     Node* root = new Node();
 
-    void update(Node* node, int start, int end, int l, int r, int val) {
-        if (l <= start && end <= r) {
+    void update(Node* node, int l, int r, int L, int R, int val) {
+        if (L <= l && r <= R) {
             // 1 表示复盖；-1 表示取消覆盖
             node->cover = val == 1;
             node->add = val;
             return;
         }
-        int mid = (start + end) >> 1;
-        pushDown(node, mid - start + 1, end - mid);
-        if (l <= mid) update(node->left, start, mid, l, r, val);
-        if (r > mid) update(node->right, mid + 1, end, l, r, val);
+        int mid = (l + r) >> 1;
+        pushDown(node, mid - l + 1, r - mid);
+        if (L <= mid) update(node->left, l, mid, L, R, val);
+        if (R > mid) update(node->right, mid + 1, r, L, R, val);
         pushUp(node);
     }
 
-    bool query(Node* node, int start, int end, int l, int r) {
-        if (l <= start && end <= r) return node->cover;
-        int mid = (start + end) >> 1;
-        pushDown(node, mid - start + 1, end - mid);
+    bool query(Node* node, int l, int r, int L, int R) {
+        if (L <= l && r <= R) return node->cover;
+        int mid = (l + r) >> 1;
+        pushDown(node, mid - l + 1, r - mid);
         // 查询左右子树是否被覆盖
         bool ans = true;
-        if (l <= mid) ans = ans && query(node->left, start, mid, l, r);
-        if (r > mid) ans = ans && query(node->right, mid + 1, end, l, r);
+        if (L <= mid) ans = ans && query(node->left, l, mid, L, R);
+        if (R > mid) ans = ans && query(node->right, mid + 1, r, L, R);
         return ans;
     }
 
