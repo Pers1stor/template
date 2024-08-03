@@ -6,7 +6,8 @@ using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 using pii = pair<int, int>;
-// leetcode 2376模板
+
+// 数位dp模板
 int digit_dp(int n) {
     auto s = to_string(n);
     int m = s.length(), memo[m][1 << 10];
