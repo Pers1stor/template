@@ -2,7 +2,7 @@
 
 using namespace std;
 //区间和
-class SegmentTree1 {
+class SegmentTree {
     class Node {
     public:
         int val, add;

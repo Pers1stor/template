@@ -19,10 +19,11 @@ struct BIT {
         }
         return res;
     }
-    void modify(int l, T z) {
+    // l ~ n 加上 z
+    void update(int l, T x) {
         if (l <= 0) return;
         for (int i = l; i <= n; i += (i & -i)) {
-            tree[i] += z;
+            tree[i] += x;
         }
     }
     T rangeQuery(int l, int r) {
@@ -34,7 +35,14 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
+    BIT<int> t(100);
+    //
     
+    
+    //for (int i = 3; i <= 6; ++i) t.tree[i] = i;
+    t.update(2, 10);
+    t.update(6, -10);
+    cout << t.rangeQuery(2, 5);
     return 0;
 }
 

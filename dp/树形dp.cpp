@@ -14,6 +14,17 @@ using ll = long long;
 using ull = unsigned long long;
 using pii = pair<int, int>;
 
+// 换根dp
+//树的高度： 1. 先以节点 0 为根节点进行dfs，生成初始的每个节点高度 h
+//          2. 然后再以节点 0 为根节点再次dfs，进行换根处理
+//              a. 设当前根节点为 x，找到其子节点中的最大高度 maxH 和次大高度 secondH，更新根节点的树高度为 height[x] = maxH + 1;
+//              b.枚举其此节点进行换根处理，那么 h[node] 就需要进行更新：
+//                  如果 h[x] == maxH，即这个子节点就是提供最大高度的子节点。当前根节点变为子节点时，高度发生变化，h[x] = secondMaxH + 1
+//                  否则，当前根节点变为子节点时，高度不变， h[x] = maxH + 1;
+
+
+
+
 //打家劫舍3推广到一般树
 void solve() {
     ios::sync_with_stdio(false);
