@@ -61,6 +61,7 @@ struct Trie {
         if (ch >= 'a' && ch <= 'z') return ch - 'a';
         if (ch >= 'A' && ch <= 'Z') return ch - 'A' + 26;
         if (ch >= '0' && ch <= '9') return ch - '0' + 52;
+        return ch;
     }
 };
 

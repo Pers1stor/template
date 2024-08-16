@@ -35,5 +35,5 @@ struct Comb {
 
 int main() {
     Comb comb(1000);
-    cout << comb.C(4, 2);
+    cout << comb.A(4, 2);
 }
