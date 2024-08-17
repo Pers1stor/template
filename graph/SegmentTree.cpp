@@ -5,7 +5,7 @@ using namespace std;
 using namespace std;
 
 template <typename T>
-class SegTreeLazyRangeAdd {
+class SegTreeRangeAdd {
     vector<T> tree, lazy;
     vector<T>* arr;
     int n, root, n4, end;
@@ -58,7 +58,7 @@ class SegTreeLazyRangeAdd {
     }
 
 public:
-    SegTreeLazyRangeAdd<T>(vector<T> v) {
+    SegTreeRangeAdd(vector<T> v) {
         n = v.size();
         n4 = n * 4;
         tree = vector<T>(n4, 0);
@@ -70,13 +70,13 @@ public:
         arr = nullptr;
     }
 
-    T range_sum(int l, int r) { return range_sum(l, r, 0, end, root); }
+    T query(int l, int r) { return range_sum(l, r, 0, end, root); }
 
-    void range_add(int l, int r, T val) { range_add(l, r, val, 0, end, root); }
+    void update(int l, int r, T val) { range_add(l, r, val, 0, end, root); }
 };
 
 template <typename T>
-class SegTreeLazyRangeSet {
+class SegTreeRangeSet {
     vector<T> tree, lazy;
     vector<T>* arr;
     int n, root, n4, end;
@@ -127,7 +127,7 @@ class SegTreeLazyRangeSet {
     }
 
 public:
-    SegTreeLazyRangeSet<T>(vector<T> v) {
+    SegTreeRangeSet(vector<T> v) {
         n = v.size();
         n4 = n * 4;
         tree = vector<T>(n4, 0);
@@ -139,23 +139,26 @@ public:
         arr = nullptr;
     }
 
-    T range_sum(int l, int r) { return range_sum(l, r, 0, end, root); }
+    T query(int l, int r) { return range_sum(l, r, 0, end, root); }
 
-    void range_set(int l, int r, T val) { range_set(l, r, val, 0, end, root); }
+    void update(int l, int r, T val) { range_set(l, r, val, 0, end, root); }
 };
 
-//Node 版本
+
 // 区间和
-class SegmentTree {
+template <typename T>
+class SegTreeNodeRangeAdd {
+private:
     class Node {
     public:
-        int val, add;
+        T val, add;
         Node *left, *right;
         Node() : val(0), add(0), left(nullptr), right(nullptr) {}
     };
-    const int N = 1e9;
+    const int N;
     Node* root = new Node();
-    void update(Node* node, int l, int r, int L, int R, int val) {
+
+    void update(Node* node, int l, int r, int L, int R, T val) {
         if (L <= l && r <= R) {
             node->val += (r - l + 1) * val;
             node->add += val;
@@ -167,9 +170,11 @@ class SegmentTree {
         if (R > mid) update(node->right, mid + 1, r, L, R, val);
         pushUp(node);
     }
-    int query(Node* node, int l, int r, int L, int R) {
+
+    T query(Node* node, int l, int r, int L, int R) {
         if (L <= l && r <= R) return node->val;
-        int mid = (l + r) >> 1, ans = 0;
+        int mid = (l + r) >> 1;
+        T ans = 0;
         pushDown(node, mid - l + 1, r - mid);
         if (L <= mid) ans += query(node->left, l, mid, L, R);
         if (R > mid) ans += query(node->right, mid + 1, r, L, R);
@@ -179,6 +184,7 @@ class SegmentTree {
     void pushUp(Node* node) {
         node->val = node->left->val + node->right->val;
     }
+
     void pushDown(Node* node, int leftNum, int rightNum) {
         if (node->left == nullptr) node->left = new Node();
         if (node->right == nullptr) node->right = new Node();
@@ -190,19 +196,30 @@ class SegmentTree {
         node->right->add += node->add;
         node->add = 0;
     }
+public:
+    SegTreeNodeRangeAdd(const int n) : N(n) {}
+
+    void update(int L, int R, T val) {
+        update(root, 0, N, L, R, val);
+    }
+
+    T query(int L, int R) {
+        return query(root, 0, N, L, R);
+    }
 };
 
 // 区间最值
-class SegmentTree2 {
-    class Node {
-    public:
-        int val, add;
+template <typename T>
+class SegTreeNodeRangeMax {
+private:
+    struct Node {
+        T val, add;
         Node *left, *right;
         Node() : val(0), add(0), left(nullptr), right(nullptr) {}
     };
-    const int N = 1e9;
+    const int N;
     Node* root = new Node();
-    void update(Node* node, int l, int r, int L, int R, int val) {
+    void update(Node* node, int l, int r, int L, int R, T val) {
         if (L <= l && r <= R) {
             node->val = (r - l + 1) * val;
             node->add += val;
@@ -214,9 +231,10 @@ class SegmentTree2 {
         if (R > mid) update(node->right, mid + 1, r, L, R, val);
         pushUp(node);
     }
-    int query(Node* node, int l, int r, int L, int R) {
+    T query(Node* node, int l, int r, int L, int R) {
         if (L <= l && r <= R) return node->val;
-        int mid = (l + r) >> 1, ans = 0;
+        int mid = (l + r) >> 1;
+        T ans = 0;
         pushDown(node, mid - l + 1, r - mid);
         if (L <= mid) ans = query(node->left, l, mid, L, R);
         if (R > mid) ans = max(ans, query(node->right, mid + 1, r, L, R));
@@ -237,9 +255,21 @@ class SegmentTree2 {
         node->right->add += node->add;
         node->add = 0;
     }
+public:
+    SegTreeNodeRangeMax(int n) : N(N) {}
+
+    void update(int L, int R, T val) {
+        update(root, 0, N, L, R, val);
+    }
+
+    T query(int L, int R) {
+        return query(root, 0, N, L, R);
+    }
 };
 // 区间覆盖
-class SegmentTree3 {
+
+class SegTreeNodeRangeSet {
+private:
     struct Node {
         // 表示当前区间是否被覆盖
         bool cover;
@@ -247,7 +277,7 @@ class SegmentTree3 {
         Node *left, *right;
     };
 
-    const int N = 1e9;
+    const int N;
     Node* root = new Node();
 
     void update(Node* node, int l, int r, int L, int R, int val) {
@@ -256,7 +286,7 @@ class SegmentTree3 {
             node->cover = val == 1;
             node->add = val;
             return;
-        }
+        }  
         int mid = (l + r) >> 1;
         pushDown(node, mid - l + 1, r - mid);
         if (L <= mid) update(node->left, l, mid, L, R, val);
@@ -289,5 +319,15 @@ class SegmentTree3 {
         node->left->add = node->add;
         node->right->add = node->add;
         node->add = 0;
+    }
+public:
+    SegTreeNodeRangeSet(int n) : N(N) {}
+
+    void update(int L, int R, int val) {
+        update(root, 0, N, L, R, val);
+    }
+
+    int query(int L, int R) {
+        return query(root, 0, N, L, R);
     }
 };
